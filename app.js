@@ -38,7 +38,7 @@ io.on('connection', function(socket){
       peoples.push({ "id" : id, "color" : color });
 
       console.log(peoples);
-	  displayNumberOfConnectedUsers();
+      displayNumberOfConnectedUsers();
       socket.emit("me", {
         "id" : id,
         "color" : color
@@ -79,7 +79,7 @@ io.on('connection', function(socket){
     socket.on("disconnect", function(){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1);
-		displayNumberOfConnectedUsers();
+	displayNumberOfConnectedUsers();
     })
 });
 
@@ -93,5 +93,5 @@ function arrayObjectIndexOf(myArray, searchTerm, property) {
 }
 
 function displayNumberOfConnectedUsers(){
-	console.log("Nombre de personnes connectées : " + peoples.length);
+    console.log("Nombre de personnes connectées : " + peoples.length);
 }
