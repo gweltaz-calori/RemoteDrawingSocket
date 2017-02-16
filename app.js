@@ -61,6 +61,20 @@ io.on('connection', function(socket){
       socket.broadcast.emit("receiveDrawing", objectToSend);
     });
 
+    // On traite le cas ou l'utilisateur veut une nouvelle couleur
+    socket.on("askColor", function(){
+        
+        var id = socket.id;  //On récupère l'id de l'utilisateur qui a émit le socket
+        var color = colors[Math.floor(Math.random()*5)]; // On génère une couleurs aléatoire grâce à la liste
+        console.log("La personne : "+id+" veut une nouvelle couleur : "+color);
+        // On émet un socket vers cet utilisateur avec la nouvelle couleur
+        socket.emit("newColor", 
+        {
+          "id" : id,
+          "color" : color
+        });
+        
+    })
     socket.on("disconnect", function(){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1)
