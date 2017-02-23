@@ -3,7 +3,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var colors = ["#E53935","#8E24AA","#D81B60","#00897B","#FDD835","#039BE5","#E91E63","#2196F3","#3F51B5","#4CAF50","#FFC107","#FF9800","#FFEB3B"];
+var colors = ["#E53935","#8E24AA","#D81B60","#00897B","#FDD835","#039BE5","#E91E63","#2196F3","#3F51B5","#4CAF50","#FFC107","#FF9800","#FFEB3B","#303F9F"];
+var backgroundColor = "#303F9F";
 
 var peoples = new Array();
 
@@ -79,7 +80,7 @@ io.on('connection', function(socket){
     socket.on("disconnect", function(){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1);
-	displayNumberOfConnectedUsers();
+	      displayNumberOfConnectedUsers();
     })
 });
 
