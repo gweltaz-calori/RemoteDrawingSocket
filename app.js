@@ -3,9 +3,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var colors = ["#E53935","#8E24AA","#D81B60","#00897B","#FDD835","#039BE5","#E91E63","#2196F3","#3F51B5","#4CAF50","#FFC107","#FF9800","#FFEB3B","#303F9F"];
+var colors = ["#303F9F","#E53935","#8E24AA","#D81B60","#00897B","#FDD835","#039BE5","#E91E63","#2196F3","#3F51B5","#4CAF50","#FFC107","#FF9800","#FFEB3B"];
 var backgroundColor = "#303F9F";
 
+var eraser =undefined;
 var peoples = new Array();
 
 //ExpressJS
@@ -34,15 +35,22 @@ io.on('connection', function(socket){
     //Show me your color
     socket.on("login", function(){
       var id = socket.id;
-      var color = colors[Math.floor(Math.random()*5)];
-
-      peoples.push({ "id" : id, "color" : color });
+      var color = colors[Math.floor(Math.random()*2)];
+      
+      var isEraser = color ==backgroundColor && eraser ==undefined ? true : false; //Si la couleur généré est la meme que celle du background alors c'est l'eraser
+      if(isEraser)
+      {
+        eraser = { "id" : id, "color" : color,"isEraser" : isEraser}; // On modifie l'eraser en cours si il n'existe pas déja 
+      }
+      peoples.push({ "id" : id, "color" : color,"isEraser" : isEraser});
 
       console.log(peoples);
       displayNumberOfConnectedUsers();
+      displayEraser();
       socket.emit("me", {
         "id" : id,
-        "color" : color
+        "color" : color,
+        "isEraser" : isEraser, //Propriété pour savoir si l'utilisateur est l'eraser ou non
       });
 
       io.emit("userList", peoples);
@@ -67,13 +75,28 @@ io.on('connection', function(socket){
     socket.on("askColor", function(){
         
         var id = socket.id;  //On récupère l'id de l'utilisateur qui a émit le socket
-        var color = colors[Math.floor(Math.random()*5)]; // On génère une couleurs aléatoire grâce à la liste
+        var color = colors[Math.floor(Math.random()*2)]; // On génère une couleurs aléatoire grâce à la liste
+        var isEraser = color ==backgroundColor ? true : false; //Si la couleur généré est la meme que celle du background alors c'est l'eraser
+        if(isEraser)
+        {
+          
+          peoples.forEach(person => { //Il ne peut y avoir que 1 eraser au maximum donc on modifie l'ancien eraser
+            if(person.id == eraser.id) 
+            {
+              person.isEraser = false
+            }
+          });
+          eraser = { "id" : id, "color" : color,"isEraser" : isEraser}; //on met a jour l'eraser
+        }
+        console.log(peoples);
+        displayEraser();
         console.log("La personne : "+id+" veut une nouvelle couleur : "+color);
         // On émet un socket vers cet utilisateur avec la nouvelle couleur
         socket.emit("newColor", 
         {
           "id" : id,
-          "color" : color
+          "color" : color,
+          "isEraser" : isEraser,
         });
         
     })
@@ -95,4 +118,7 @@ function arrayObjectIndexOf(myArray, searchTerm, property) {
 
 function displayNumberOfConnectedUsers(){
     console.log("Nombre de personnes connectées : " + peoples.length);
+}
+function displayEraser(){
+    console.log("leraser actuel est " + JSON.stringify(eraser));
 }

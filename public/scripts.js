@@ -26,7 +26,7 @@
     App.ctx.strokeStyle = "#ECD018";
     App.ctx.lineWidth = 4;
     App.ctx.lineCap = "round";
-    App.socket = io.connect('http://localhost:3000');
+    App.socket = io.connect('http://192.168.1.100:3000');
 
     App.me = {};
 
