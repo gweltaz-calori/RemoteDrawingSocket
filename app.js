@@ -80,12 +80,17 @@ io.on('connection', function(socket){
         if(isEraser)
         {
           
-          peoples.forEach(person => { //Il ne peut y avoir que 1 eraser au maximum donc on modifie l'ancien eraser
-            if(person.id == eraser.id) 
-            {
-              person.isEraser = false
-            }
-          });
+          if(eraser !==undefined)
+          {
+            peoples.forEach(person => 
+            { //Il ne peut y avoir que 1 eraser au maximum donc on modifie l'ancien eraser
+              if(person.id == eraser.id) 
+              {
+                person.isEraser = false
+              }
+            });
+          }
+          
           eraser = { "id" : id, "color" : color,"isEraser" : isEraser}; //on met a jour l'eraser
         }
         console.log(peoples);
