@@ -109,6 +109,10 @@ io.on('connection', function(socket){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1);
 	      displayNumberOfConnectedUsers();
+        if(eraser != undefined && socket.id == eraser.id)
+        {
+          eraser = undefined;
+        }
     })
 });
 
