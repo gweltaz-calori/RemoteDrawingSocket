@@ -36,6 +36,12 @@ io.on('connection', function(socket){
     socket.on("login", function(){
       var id = socket.id;
       var color = colors[Math.floor(Math.random()*2)];
+      if(eraser)
+      {
+        color = colors.filter(color => color != backgroundColor)[Math.floor(Math.random()*2)]  
+        //Si il ya deja un eraser on empeche de tomber sur la couleur de l'eraser
+      }
+      
       
       var isEraser = color ==backgroundColor && eraser ==undefined ? true : false; //Si la couleur généré est la meme que celle du background alors c'est l'eraser
       if(isEraser)
@@ -74,28 +80,35 @@ io.on('connection', function(socket){
     // On traite le cas ou l'utilisateur veut une nouvelle couleur
     socket.on("askColor", function(){
         
+        
         var id = socket.id;  //On récupère l'id de l'utilisateur qui a émit le socket
         var color = colors[Math.floor(Math.random()*2)]; // On génère une couleurs aléatoire grâce à la liste
-        var isEraser = color ==backgroundColor ? true : false; //Si la couleur généré est la meme que celle du background alors c'est l'eraser
+        var isEraser = color ==backgroundColor && eraser !==undefined ? true : false; //Si la couleur généré est la meme que celle du background alors c'est l'eraser
         if(isEraser)
         {
           
-          if(eraser !==undefined)
-          {
             peoples.forEach(person => 
             { //Il ne peut y avoir que 1 eraser au maximum donc on modifie l'ancien eraser
               if(person.id == eraser.id) 
               {
-                person.isEraser = false
+                person.color = colors.filter(color => color != backgroundColor)[Math.floor(Math.random()*2)]; // On genere une couleur
+                person.isEraser = false;
+                io.to(eraser.id).emit('me', {
+                  "id" : eraser.id,
+                  "color" : person.color,
+                  "isEraser" : person.isEraser, //on notifie l'ancien eraser qu'il ne l'est plus
+                });
               }
             });
-          }
           
           eraser = { "id" : id, "color" : color,"isEraser" : isEraser}; //on met a jour l'eraser
+          
+          console.log("nouvel eraser : "+JSON.stringify(eraser))
         }
+        peoples[peoples.findIndex((person => person.id == id))].isEraser=isEraser; // On modifie la propriété isEraser de la personne qui demande la couleur
         console.log(peoples);
-        displayEraser();
-        console.log("La personne : "+id+" veut une nouvelle couleur : "+color);
+        
+        
         // On émet un socket vers cet utilisateur avec la nouvelle couleur
         socket.emit("newColor", 
         {
@@ -113,6 +126,7 @@ io.on('connection', function(socket){
         {
           eraser = undefined;
         }
+        displayEraser();
     })
 });
 
