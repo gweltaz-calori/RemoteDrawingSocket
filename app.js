@@ -67,11 +67,12 @@ io.on('connection', function(socket){
     })
 
     //Transfer coordinates
-    socket.on('drawing', function(coordinates){
+    socket.on('drawing', function(coordinates, strokeWidth){
 
       var objectToSend = {
        "coordinates" : coordinates,
-       "drawer" : socket.id
+       "drawer" : socket.id,
+       "strokeWidth" : strokeWidth,
      };
      //console.log(objectToSend);
       socket.broadcast.emit("receiveDrawing", objectToSend);
