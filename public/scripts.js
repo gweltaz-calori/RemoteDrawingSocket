@@ -26,7 +26,7 @@
     App.ctx.strokeStyle = "#ECD018";
     App.ctx.lineWidth = 4;
     App.ctx.lineCap = "round";
-    App.socket = io.connect('http://10.7.182.109:3000');
+    App.socket = io.connect('http://192.168.1.56:3000');
 
     App.me = {};
 
@@ -59,7 +59,6 @@
       return App.ctx.closePath();
     };
     App.socket.emit('login', '');
-
   };
   /*
   	Draw Events
@@ -82,6 +81,7 @@
     App.draw(objectToSend, App.me.color);
 
   });
+
 
   $(function() {
     return App.init();
