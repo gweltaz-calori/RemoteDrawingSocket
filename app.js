@@ -19,6 +19,12 @@ app.get('/', function(req, res){
   res.sendFile('/index.html');
 });
 
+app.get('/admin', function(req, res)
+{
+  
+  res.sendFile(__dirname +'/public/admin.html');
+
+});
 
 //Socket.io
 http.listen(3000, function(){
@@ -32,6 +38,18 @@ io.on('connection', function(socket){
       peoples.push({ "id" : socket.id, "color" : undefined, "isEraser" : false});
       displayNumberOfConnectedUsers();
       //io.emit("userList", peoples);
+    });
+
+    socket.on("adminLogin", function(){
+      console.log("ok")
+      var infosRooms = new Array();
+      console.log("rooms : "+JSON.stringify(rooms));
+      rooms.forEach(function(room){
+
+          infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
+      });
+
+      socket.emit('updateRooms', infosRooms);
     });
 
     socket.on("joinRoom", function(roomName){
@@ -72,12 +90,7 @@ io.on('connection', function(socket){
 
       io.in(roomName).emit("userList", getClientsInARoom(roomName));
 
-      var infosRooms = new Array();
-      rooms.forEach(function(room){
-          infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
-      });
-
-      io.emit('updateRooms', infosRooms);
+      
     });
 
     socket.on('clear', function(){
@@ -139,7 +152,7 @@ io.on('connection', function(socket){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1);
 	      displayNumberOfConnectedUsers();
-        if(getMyRoom(socket.room).eraser != undefined && socket.id == getMyRoom(socket.room).eraser.id)
+        if(socket.room != undefined && getMyRoom(socket.room).eraser != undefined && socket.id == getMyRoom(socket.room).eraser.id)
         {
           getMyRoom(socket.room).eraser = undefined;
         }
@@ -166,6 +179,12 @@ function displayEraser(){
     console.log("leraser actuel est " + JSON.stringify(eraser));
 }
 function getClientsInARoom(roomName){
-  var clients_in_the_room = Object.keys(io.sockets.adapter.rooms[roomName].sockets);
-  return peoples.filter(people => clients_in_the_room.indexOf(people.id) > -1);
+
+  if(io.sockets.adapter.rooms[roomName] !=undefined)
+  {
+    console.log("ok")
+    var clients_in_the_room = Object.keys(io.sockets.adapter.rooms[roomName].sockets);
+    return peoples.filter(people => clients_in_the_room.indexOf(people.id) > -1);
+  }
+  return [];
 }

@@ -1,0 +1,181 @@
+body,html
+{
+	margin: 0;
+	box-sizing: border-box;
+	font-family: "Roboto";
+	background-color: #eee;
+}
+header
+{
+	height: 65px;
+    background-color: #392C44;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+#header-title
+{
+	color: white;
+    font-family: "Roboto";
+    font-weight: 400;
+    height: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 16px;
+}
+#app
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 65px;
+}
+#app-content
+{
+	width: 50%;
+	padding: 30px;
+}
+#app-content-header
+{
+	display: flex;
+	
+	align-items: center;
+}
+.filter-button
+{
+	margin-left: auto;
+	cursor: pointer;
+	padding: 7px;
+	border-radius: 50%;
+	transition: background-color 0.4s;
+}
+.filter-button:hover
+{
+
+	
+    background-color: rgba(33,33,33,0.1);
+}
+.rooms-title
+{
+	font-weight: 500;
+}
+.filters
+{
+	padding-top: 20px;
+}
+.filter-item
+{
+	font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(17,17,17,0.6);
+    margin: 10px 0;
+}
+.filter-item-active
+{
+	color: rgba(0,0,0,1)
+}
+.room-list
+{
+	padding: 20px;
+}
+.pointer .md-radio .md-radio-label
+{
+	cursor: pointer;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+@media (max-width: 835px), (max-device-width: 835px)
+{
+    #app-content
+	{
+		width: 80%;
+	}
+}
+@media (max-width: 461px), (max-device-width: 461px)
+{
+    #app-content
+	{
+		width: 100%;
+	}
+}
+/*Component room-item */
+.room-item
+{
+	padding: 25px;
+	background-color: white;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	border-radius: 2px;
+	margin: 15px 0;
+	display: flex;
+	flex-direction: column;
+}
+.room-item-name
+{
+	font-size: 20px;
+}
+.room-item-users-count
+{
+    font-size: 13px;
+    color: rgba(0,0,0,0.69);
+    padding-top: 8px;
+}
+/*Component material radio*/
+
+.material-radio
+{
+	cursor: pointer;	
+	display: inline-flex;
+	padding: 10px;
+}
+.real-radio-button
+{
+	width: 20px;
+    height: 20px;
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,.54);
+    transition: all .4s cubic-bezier(.25,.8,.25,1);
+}
+.real-radio-button:after {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    bottom: 3px;
+    left: 3px;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale3D(.38,.38,1);
+    transition: all .3s cubic-bezier(.55,0,.55,.2);
+    content: " ";
+    background-color: #392C44;
+}
+.real-radio-button-checked
+{
+
+    border-color: #392C44;
+}
+.real-radio-button-checked:after
+{
+    opacity: 1;
+    transform: scale3D(1,1,1);
+    transition: all .4s cubic-bezier(.25,.8,.25,1);
+}
+.material-radio-button
+{
+	cursor: pointer;
+	pointer-events: none;
+    opacity: 0;
+}
+.md-radio-label
+{
+	cursor: pointer;
+	margin-left: 8px;
+}
