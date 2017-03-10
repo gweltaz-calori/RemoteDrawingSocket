@@ -71,6 +71,13 @@ io.on('connection', function(socket){
       });
 
       io.in(roomName).emit("userList", getClientsInARoom(roomName));
+
+      var infosRooms = new Array();
+      rooms.forEach(function(room){
+          infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
+      });
+
+      io.emit('updateRooms', infosRooms);
     });
 
     socket.on('clear', function(){
