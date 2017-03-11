@@ -31,10 +31,19 @@ io.on('connection', function(socket){
     socket.on("login", function(){
       peoples.push({ "id" : socket.id, "color" : undefined, "isEraser" : false});
       displayNumberOfConnectedUsers();
-      //io.emit("userList", peoples);
+      io.emit("userList", peoples);
+      socket.emit("login");
     });
 
+
+
     socket.on("joinRoom", function(roomName){
+      //Si on était déjà dans une room on la quitte
+      if(socket.room != undefined){
+        socket.broadcast.to(socket.room).emit('userLeftRoom', '(pseudo) left the room'); //on changera plus tard avec son vrai pseudo
+        socket.leave(socket.room);
+      }
+
       var myRoom = rooms.find(room => room.name == roomName)
       if(myRoom == undefined){
         //On crée la room si elle n'existe pas
@@ -71,6 +80,7 @@ io.on('connection', function(socket){
       });
 
       io.in(roomName).emit("userList", getClientsInARoom(roomName));
+      socket.broadcast.to(socket.room).emit('userJoinedRoom', '(pseudo) joined the room'); //on changera plus tard avec son vrai pseudo
 
       var infosRooms = new Array();
       rooms.forEach(function(room){
@@ -80,9 +90,15 @@ io.on('connection', function(socket){
       io.emit('updateRooms', infosRooms);
     });
 
+
+
+
     socket.on('clear', function(){
-      io.emit("clear");
+      io.in(socket.room).emit("clear");
     });
+
+
+
 
     //Transfer coordinates
     socket.on('drawing', function(coordinates, strokeWidth){
@@ -94,6 +110,9 @@ io.on('connection', function(socket){
      };
       socket.broadcast.to(socket.room).emit("receiveDrawing", objectToSend);
     });
+
+
+
 
     // On traite le cas ou l'utilisateur veut une nouvelle couleur
     socket.on("askColor", function(){
@@ -119,8 +138,8 @@ io.on('connection', function(socket){
           myRoom.eraser = { "id" : id, "color" : color,"isEraser" : isEraser}; //on met a jour l'eraser
           console.log("nouvel eraser : "+JSON.stringify(myRoom.eraser))
         }
-        peoples[peoples.findIndex((person => person.id == id))].isEraser=isEraser; // On modifie la propriété isEraser de la personne qui demande la couleur
-        peoples[peoples.findIndex((person => person.id == id))].color=color;
+        peoples[peoples.findIndex((person => person.id == id))].isEraser = isEraser; // On modifie la propriété isEraser de la personne qui demande la couleur
+        peoples[peoples.findIndex((person => person.id == id))].color = color;
         
         console.log(peoples);
         
@@ -132,18 +151,23 @@ io.on('connection', function(socket){
           "isEraser" : isEraser,
         });
 
-        io.in(roomName).emit("userList", getClientsInARoom(roomName));
+        io.in(socket.room).emit("userList", getClientsInARoom(socket.room));
     });
+
+
+    
 
     socket.on("disconnect", function(){
         console.log("bye bye "+socket.id);
         peoples.splice(arrayObjectIndexOf(peoples, socket.id, "id"), 1);
 	      displayNumberOfConnectedUsers();
-        if(getMyRoom(socket.room).eraser != undefined && socket.id == getMyRoom(socket.room).eraser.id)
-        {
-          getMyRoom(socket.room).eraser = undefined;
+        if(socket.room != undefined){
+          if(getMyRoom(socket.room).eraser != undefined && socket.id == getMyRoom(socket.room).eraser.id)
+          {
+            getMyRoom(socket.room).eraser = undefined;
+          }
+          socket.leave(socket.room);
         }
-        socket.leave(socket.room)
         //displayEraser();
     })
 });
