@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, maximum-scale=1">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+	<link rel="stylesheet" href="../css/admin.css" />
+	<title>Socket Admin</title>
+</head>
+<body>
+	<header>
+		<span id="header-title">Socket Admin</span>
+	</header>
+	<div id="app">
+		<div id="app-content">
+			<div id="app-content-header">
+				<span class="rooms-title">ROOMS</span>
+				<i class="material-icons filter-button" @click="visibleFilters=!visibleFilters">filter_list</i>
+			</div>
+			<transition name="fade">
+				<div class="filters" v-if="visibleFilters">
+					<material-radio v-model="filter" name="groupFilter" id="countConnected" my-value="nombre">Par nombre de personnes</material-radio>
+					<material-radio v-model="filter" name="groupFilter" id="name" my-value="nom">Par nom</material-radio>
+					
+				</div>
+			</transition>
+			<div class="room-list">
+				<room-item v-for="(room,index) in filteredRooms" :room="room" :key="index"></room-item>
+			</div>
+		</div>
+		
+	</div>
+
+	<!-- Scripts required -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.event.drag-2.0.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.1/vue.js"></script>
+	<script type="text/javascript" src="../js/admin.js"></script>
+	
+	
+</body>

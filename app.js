@@ -16,7 +16,11 @@ app.use(express.static('public'));
 
 
 app.get('/', function(req, res){
-  res.sendFile('/index.html');
+  res.sendFile(__dirname +'/public/views/index.html');
+});
+
+app.get('/admin', function(req, res){
+  res.sendFile(__dirname +'/public/views/admin.html');
 });
 
 
@@ -35,7 +39,17 @@ io.on('connection', function(socket){
       socket.emit("login");
     });
 
+    socket.on("adminLogin", function(){
+      console.log("ok")
+      var infosRooms = new Array();
+      console.log("rooms : "+JSON.stringify(rooms));
+      rooms.forEach(function(room){
 
+          infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
+      });
+
+      socket.emit('updateRooms', infosRooms);
+    });
 
     socket.on("joinRoom", function(roomName){
       //Si on était déjà dans une room on la quitte
@@ -168,6 +182,11 @@ io.on('connection', function(socket){
           }
           socket.leave(socket.room);
         }
+        var infosRooms = new Array();
+        rooms.forEach(function(room){
+            infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
+        });
+        io.emit('updateRooms', infosRooms);
         //displayEraser();
     })
 });
