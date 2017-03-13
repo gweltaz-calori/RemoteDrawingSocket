@@ -33,7 +33,7 @@ Vue.component('material-radio', {
   }
 })
 
-var socket = io.connect('http://192.168.1.46:3000');
+var socket = io.connect('http://192.168.1.56:3000');
 var vm  = new Vue({
   el: '#app',
   data: {
@@ -68,7 +68,6 @@ var vm  = new Vue({
     socket.emit('adminLogin');
     socket.on('updateRooms', function(rooms) 
     {
-
       this.rooms = rooms
 
     }.bind(this));

@@ -40,11 +40,8 @@ io.on('connection', function(socket){
     });
 
     socket.on("adminLogin", function(){
-      console.log("ok")
       var infosRooms = new Array();
-      console.log("rooms : "+JSON.stringify(rooms));
       rooms.forEach(function(room){
-
           infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
       });
 
@@ -55,6 +52,9 @@ io.on('connection', function(socket){
       //Si on était déjà dans une room on la quitte
       if(socket.room != undefined){
         socket.broadcast.to(socket.room).emit('userLeftRoom', '(pseudo) left the room'); //on changera plus tard avec son vrai pseudo
+        //s'il était seul dans la room on delete la room
+        if(getClientsInARoom(socket.room).length - 1 == 0)
+          rooms.splice(arrayObjectIndexOf(rooms, socket.room, "name"), 1);
         socket.leave(socket.room);
       }
 
