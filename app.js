@@ -182,9 +182,9 @@ io.on('connection', function(socket){
           }
           socket.broadcast.to(socket.room).emit('userLeftRoom', '(pseudo) left the room'); //on changera plus tard avec son vrai pseudo
           //s'il était seul dans la room on delete la room
-          if(getClientsInARoom(socket.room).length - 1 == 0)
+          //Socket io fait automatiquement un socket.leave, donc on teste si la room contient encore des users ou si elle est undefined
+          if(io.sockets.adapter.rooms[socket.room] == undefined)
             rooms.splice(arrayObjectIndexOf(rooms, socket.room, "name"), 1);
-          socket.leave(socket.room);
         }
         var infosRooms = new Array();
         rooms.forEach(function(room){
