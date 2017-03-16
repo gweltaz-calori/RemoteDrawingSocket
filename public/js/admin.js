@@ -3,8 +3,15 @@ Vue.component('room-item', {
   template: `
   <div class="room-item">
   <span class="room-item-name">{{room.name}}</span>
-  <span class="room-item-users-count">{{room.people.length}} utilisateurs connectés</span>
-  </div>`
+  <span class="room-item-users-count">{{countUserByRoom}}</span>
+  </div>`,
+  computed:{
+
+    countUserByRoom()
+    {
+      return this.room.people.length+" utilisateur"+pluralizeItem(this.room.people.length)+" connecté"+pluralizeItem(this.room.people.length); 
+    }
+  }
 })
 
 Vue.component('material-radio', {
@@ -33,13 +40,14 @@ Vue.component('material-radio', {
   }
 })
 
-var socket = io.connect('http://192.168.1.56:3000');
+var socket = io.connect('http://10.0.2.15:3000');
 var vm  = new Vue({
   el: '#app',
   data: {
     rooms:
-    [
+    [ 
 	    
+      
     ],
     filter:'',
     visibleFilters:false
@@ -58,10 +66,26 @@ var vm  = new Vue({
 			});
   		}
   		return this.rooms;
-  	}
+  	},
+    countOfRooms()
+    {
+      
+      return this.rooms.length==0 ? '' : "("+this.rooms.length+" room"+pluralizeItem(this.rooms.length)+")";
+    },
+    countTotalUsers()
+    {
+      var total=0;
+      this.rooms.forEach(room =>{
+        total = total + room.people.length;
+      });
+      return total+" utilisateur"+pluralizeItem(total)+" connecté"+pluralizeItem(total);
+    },
+
   },
   methods:{
   	
+    
+  
   },
   mounted()
   {
@@ -74,3 +98,12 @@ var vm  = new Vue({
   }
 
 })
+
+function pluralizeItem (count) 
+{
+  if (count == 1) 
+  {
+    return ''
+  } 
+  return 's'
+}
