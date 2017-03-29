@@ -1,9 +1,20 @@
 Vue.component('room-item', {
   props: ['room'],
+  data(){
+    return {
+      expanded : false
+    }
+  },
   template: `
   <div class="room-item">
   <span class="room-item-name">{{room.name}}</span>
   <span class="room-item-users-count">{{countUserByRoom}}</span>
+  <div v-if="expanded">
+    <ul>
+      <li v-for="people in room.people"><span v-bind:style="{ color: people.color}">{{people.id}}</span><span v-if="people.eraser"><i class="material-icons">format_paint</i></span></li>
+    </ul>
+  </div>
+  <div v-if="room.people.length > 0" id="arrow-expand-room"><i class="material-icons" @click="expanded = !expanded" v-bind:class="{'arrow-animation': expanded}">arrow_drop_down</i></div>
   </div>`,
   computed:{
 
@@ -40,7 +51,7 @@ Vue.component('material-radio', {
   }
 })
 
-var socket = io.connect('http://10.0.2.15:3000');
+var socket = io.connect('http://192.168.1.56:3000');
 var vm  = new Vue({
   el: '#app',
   data: {
@@ -49,6 +60,7 @@ var vm  = new Vue({
 	    
       
     ],
+    nbOfConnectedUsers : 0,
     filter:'',
     visibleFilters:false
   },
@@ -74,13 +86,8 @@ var vm  = new Vue({
     },
     countTotalUsers()
     {
-      var total=0;
-      this.rooms.forEach(room =>{
-        total = total + room.people.length;
-      });
-      return total+" utilisateur"+pluralizeItem(total)+" connecté"+pluralizeItem(total);
+      return this.nbOfConnectedUsers +" utilisateur"+pluralizeItem(this.nbOfConnectedUsers)+" connecté"+pluralizeItem(this.nbOfConnectedUsers);
     },
-
   },
   methods:{
   	
@@ -93,6 +100,12 @@ var vm  = new Vue({
     socket.on('updateRooms', function(rooms) 
     {
       this.rooms = rooms
+
+    }.bind(this));
+
+    socket.on('updateNumberOfConnectedUsers', function(nb) 
+    {
+      this.nbOfConnectedUsers = nb
 
     }.bind(this));
   }

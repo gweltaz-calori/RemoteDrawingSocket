@@ -16,6 +16,7 @@
 	</header>
 	<div id="app">
 		<div id="app-content">
+			<span>{{countTotalUsers}}</span>
 			<div id="app-content-header">
 				<span class="rooms-title">ROOMS {{countOfRooms}}</span>
 				<i class="material-icons filter-button" @click="visibleFilters=!visibleFilters">filter_list</i>
@@ -26,7 +27,6 @@
 					<material-radio v-model="filter" name="groupFilter" id="name" my-value="nom">Par nom</material-radio>
 				</div>
 			</transition>
-			<span>{{countTotalUsers}}</span>
 			<div class="room-list">
 				<room-item v-for="(room,index) in filteredRooms" :room="room" :key="index"></room-item>
 			</div>

@@ -37,6 +37,7 @@ io.on('connection', function(socket){
       displayNumberOfConnectedUsers();
       io.emit("userList", peoples);
       socket.emit("login");
+      io.emit('updateNumberOfConnectedUsers', peoples.length);
     });
 
     socket.on("adminLogin", function(){
@@ -191,6 +192,7 @@ io.on('connection', function(socket){
             infosRooms.push({"name" : room.name,"people" : getClientsInARoom(room.name)});
         });
         io.emit('updateRooms', infosRooms);
+        io.emit('updateNumberOfConnectedUsers', peoples.length);
         //displayEraser();
     })
 });
