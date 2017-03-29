@@ -59,7 +59,6 @@
       return App.ctx.closePath();
     };
     App.socket.emit('login', '');
-    App.socket.emit('joinRoom', 'ah');
   };
   /*
   	Draw Events
